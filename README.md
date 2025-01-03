@@ -4,6 +4,7 @@ Arikoto is my personal Operating System development project (which I'm hoping wi
 
 ## Features/Current Stuff:
 UEFI and BIOS x86_64 support with ~~multiboot2~~ Limine protocol (again).
+
 Written in C (with partial help from artificial intelligence because obviously I'm not the best programmer in the world but I'm not fully writing the code with AI because that would be stupid and I wouldn't learn anything).
 
 ## Testing
