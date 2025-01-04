@@ -1,15 +1,12 @@
+#include "memory.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <limine.h>
-#include <print.h>
+#include <request.h>
 #include <kernel.h>
-
-__attribute__((used, section(".limine_requests")))
-static volatile struct limine_framebuffer_request limine_framebuffer_request = {
-    .id = LIMINE_FRAMEBUFFER_REQUEST,
-    .revision = 0
-};
+#include <print.h>
+#include <memory.h>
 
 // Helper function to convert integer to string
 void itoa(int num, char *str, int base) {
@@ -56,10 +53,10 @@ void itoa(int num, char *str, int base) {
 
 void display_system_info(uint32_t *fb, size_t pitch, size_t bpp, size_t *x, size_t *y) {
     // Get framebuffer information
-    struct limine_framebuffer *framebuffer = limine_framebuffer_request.response->framebuffers[0];
-    uint32_t width = limine_framebuffer_request.response->framebuffers[0]->width;
-    uint32_t height = limine_framebuffer_request.response->framebuffers[0]->height;
-    uint32_t bpp_info = limine_framebuffer_request.response->framebuffers[0]->bpp;
+    struct limine_framebuffer *framebuffer = framebuffer_info.response->framebuffers[0];
+    uint32_t width = framebuffer_info.response->framebuffers[0]->width;
+    uint32_t height = framebuffer_info.response->framebuffers[0]->height;
+    uint32_t bpp_info = framebuffer_info.response->framebuffers[0]->bpp;
     size_t max_width = framebuffer->width;
     size_t max_height = framebuffer->height;
 
@@ -128,14 +125,125 @@ void display_system_info(uint32_t *fb, size_t pitch, size_t bpp, size_t *x, size
     puts(fb, pitch, bpp, x, y, bpp_info_str, COLOR_WHITE, max_width, max_height);
 }
 
+void display_memory_info(uint32_t *fb, size_t pitch, size_t bpp, size_t *x, size_t *y) {
+    // Get framebuffer information
+    struct limine_framebuffer *framebuffer = framebuffer_info.response->framebuffers[0];
+    size_t max_width = framebuffer->width;
+    size_t max_height = framebuffer->height;
+
+    // Display total memory information
+    char buffer[64];
+    itoa(get_total_memory() / 1024, buffer, 10);
+    char total_memory_info[128];
+    int i = 0;
+    const char* total_label = "Total memory: ";
+    while (total_label[i] != '\0') {
+        total_memory_info[i] = total_label[i];
+        i++;
+    }
+    int j = 0;
+    while (buffer[j] != '\0') {
+        total_memory_info[i] = buffer[j];
+        i++;
+        j++;
+    }
+    total_memory_info[i++] = ' ';
+    total_memory_info[i++] = 'K';
+    total_memory_info[i++] = 'B';
+    total_memory_info[i] = '\0';
+    puts(fb, pitch, bpp, x, y, total_memory_info, COLOR_WHITE, max_width, max_height);
+
+    // Display used memory information
+    itoa(get_used_memory() / 1024, buffer, 10);
+    char used_memory_info[128];
+    i = 0;
+    const char* used_label = "Used memory: ";
+    while (used_label[i] != '\0') {
+        used_memory_info[i] = used_label[i];
+        i++;
+    }
+    int k = 0;
+    while (buffer[k] != '\0') {
+        used_memory_info[i] = buffer[k];
+        i++;
+        k++;
+    }
+    used_memory_info[i++] = ' ';
+    used_memory_info[i++] = 'K';
+    used_memory_info[i++] = 'B';
+    used_memory_info[i] = '\0';
+    puts(fb, pitch, bpp, x, y, used_memory_info, COLOR_WHITE, max_width, max_height);
+
+    // Display free memory information
+    itoa(get_free_memory() / 1024, buffer, 10);
+    char free_memory_info[128];
+    i = 0;
+    const char* free_label = "Free memory: ";
+    while (free_label[i] != '\0') {
+        free_memory_info[i] = free_label[i];
+        i++;
+    }
+    int l = 0;
+    while (buffer[l] != '\0') {
+        free_memory_info[i] = buffer[l];
+        i++;
+        l++;
+    }
+    free_memory_info[i++] = ' ';
+    free_memory_info[i++] = 'K';
+    free_memory_info[i++] = 'B';
+    free_memory_info[i] = '\0';
+    puts(fb, pitch, bpp, x, y, free_memory_info, COLOR_WHITE, max_width, max_height);
+
+    // Allocate and free a page
+    void *page1 = allocate_page();
+    itoa((uintptr_t)page1, buffer, 16);
+    char page_info[128];
+    i = 0;
+    const char* alloc_label = "Allocated page at: 0x";
+    while (alloc_label[i] != '\0') {
+        page_info[i] = alloc_label[i];
+        i++;
+    }
+    int m = 0;
+    while (buffer[m] != '\0') {
+        page_info[i] = buffer[m];
+        i++;
+        m++;
+    }
+    page_info[i] = '\0';
+    puts(fb, pitch, bpp, x, y, page_info, COLOR_GREEN, max_width, max_height);
+
+    free_page(page1);
+    char freed_page_info[128];
+    i = 0;
+    const char* freed_label = "Freed page at: 0x";
+    while (freed_label[i] != '\0') {
+        freed_page_info[i] = freed_label[i];
+        i++;
+    }
+    int n = 0;
+    while (buffer[n] != '\0') {
+        freed_page_info[i] = buffer[n];
+        i++;
+        n++;
+    }
+    freed_page_info[i] = '\0';
+    puts(fb, pitch, bpp, x, y, freed_page_info, COLOR_YELLOW, max_width, max_height);
+}
+
+
 // Kernel main function.
 void kmain(void) {
+    // Start PMM
+    init_pmm();
+
     // Ensure we have a framebuffer.
-    if (limine_framebuffer_request.response == NULL || limine_framebuffer_request.response->framebuffer_count < 1) {
+    if (framebuffer_info.response == NULL || framebuffer_info.response->framebuffer_count < 1) {
         hcf();
     }
 
-    struct limine_framebuffer *framebuffer = limine_framebuffer_request.response->framebuffers[0];
+    struct limine_framebuffer *framebuffer = framebuffer_info.response->framebuffers[0];
     uint32_t *fb = framebuffer->address;
     size_t pitch = framebuffer->pitch;
     size_t bpp = framebuffer->bpp;
@@ -154,6 +262,8 @@ void kmain(void) {
     puts(fb, pitch, bpp, &x, &y, "[Arikoto 0.0.1]", COLOR_RED, max_width, max_height);
 
     display_system_info(fb, pitch, bpp, &x, &y);
+
+    display_memory_info(fb, pitch, bpp, &x, &y);
 
     // We're done, just hang...
     hcf();
