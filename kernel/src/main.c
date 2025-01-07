@@ -7,6 +7,8 @@
 #include <kernel.h>
 #include <print.h>
 #include <memory.h>
+#include <vfs.h>
+#include <ramdisk.h>
 
 // Helper function to convert integer to string
 void itoa(int num, char *str, int base) {
@@ -259,11 +261,29 @@ void kmain(void) {
     size_t max_width = framebuffer->width;
     size_t max_height = framebuffer->height;
 
-    puts(fb, pitch, bpp, &x, &y, "[Arikoto 0.0.1]", COLOR_RED, max_width, max_height);
+    puts(fb, pitch, bpp, &x, &y, "[Arikoto 0.0.2]", COLOR_RED, max_width, max_height);
 
     display_system_info(fb, pitch, bpp, &x, &y);
 
     display_memory_info(fb, pitch, bpp, &x, &y);
+
+    // Mount the RAM disk with a proper vfs_operations struct
+    struct vfs_operations ramdisk_ops = {
+        .read = ramdisk_read
+    };
+    vfs_mount("/", &ramdisk_ops);
+
+    if (ramdisk_create("hello.txt", "Welcome to Arikoto!!!") == 0) {
+        puts(fb, pitch, bpp, &x, &y, "File created successfully", COLOR_GREEN, max_width, max_height);
+    } else {
+        puts(fb, pitch, bpp, &x, &y, "Failed to create file", COLOR_RED, max_width, max_height);
+    }
+
+    if (vfs_read("/hello.txt", buffer, sizeof(buffer)) == 0) {
+        puts(fb, pitch, bpp, &x, &y, buffer, COLOR_WHITE, max_width, max_height);
+    } else {
+        puts(fb, pitch, bpp, &x, &y, "Failed to read file", COLOR_RED, max_width, max_height);
+    }
 
     // We're done, just hang...
     hcf();
