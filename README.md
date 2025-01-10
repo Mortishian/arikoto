@@ -10,5 +10,14 @@ Written in C (with partial help from artificial intelligence because obviously I
 Some memory support and listing upon boot.
 Simple VFS functionality.
 
-## Testing
-Run `make run-uefi-kvm` or `run-kvm`.
+Full CMake build system with seperated includes and src.
+
+## Building and Testing
+
+Run `mkdir build && cd build` in the Arikoto root folder. Type `cmake ..`. The project will be configured automatically.
+
+From here, you can type `make`, `make run`, `make run-kvm`, `make run-uefi` and (my favourite) `make run-uefi-kvm`.
+
+## Why CMake for an OS project?
+
+It's expansive and flexible for me. It's something I wanted to experiment and use more, so why not use it with a personal experimental project?
