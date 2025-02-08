@@ -20,7 +20,6 @@ void putchar(uint32_t *fb, size_t pitch, size_t bpp, size_t x, size_t y, char c,
     struct psf1_header *font = (struct psf1_header *)&_binary_matrix_psf_start;
     uint8_t *glyphs = (uint8_t *)(&_binary_matrix_psf_start + sizeof(struct psf1_header));
 
-    size_t bytes_per_line = font->charsize / 8;
     uint8_t *glyph = glyphs + (c * font->charsize);
 
     for (size_t py = 0; py < font->charsize; py++) {
@@ -34,34 +33,24 @@ void putchar(uint32_t *fb, size_t pitch, size_t bpp, size_t x, size_t y, char c,
 }
 
 // Function to render a string with automatic line breaks and overwriting text
-void puts(uint32_t *fb, size_t pitch, size_t bpp, size_t *x, size_t *y, const char *str, uint32_t color, size_t max_width, size_t screen_height) {
-    // Keep track of the initial X position for each puts call
-    size_t start_x = *x;
-
+void puts(uint32_t *fb, size_t pitch, size_t bpp, size_t *x, size_t *y,
+          const char *str, uint32_t color, size_t screen_width, size_t screen_height) {
     while (*str) {
-        if (*str == '\n') {
-            // Move to the next line when encountering a newline character
-            *x = start_x;  // Reset x to the start of the line
-            *y += 16; // Move down by the height of a character (16 pixels)
-        } else {
-            // Otherwise, render the character
-            putchar(fb, pitch, bpp, *x, *y, *str++, color);
-            *x += 8; // Advance to the next character position (8 pixels wide)
+        if (*str == '\n' || *x + 8 >= screen_width) {
+            *x = 0; *y += 16;  // Move to next line
         }
 
-        // Check if the text exceeds the screen width
-        if (*x >= max_width) {
-            *x = start_x;  // Reset x to the start of the line
-            *y += 16; // Move down by the height of a character
+        if (*str != '\n') {
+            putchar(fb, pitch, bpp, *x, *y, *str, color);  // Draw character
+            *x += 8;  // Advance position
         }
 
-        // If we exceed the screen height, reset to the top to overwrite
-        if (*y >= screen_height) {
-            *y = 0; // Reset the y-coordinate to the top (0)
-        }
+        // Reset to top of screen if exceeding height
+        if (*y + 16 >= screen_height) *y = 0;
+
+        str++;
     }
 
-    // After the string is rendered, go to the next line automatically
-    *x = start_x;  // Reset x to the start of the line
-    *y += 16; // Move down by the height of a character (16 pixels)
+    // After string, move to next line
+    *x = 0; *y += 16;
 }

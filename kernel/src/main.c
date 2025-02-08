@@ -291,6 +291,8 @@ void kmain(void) {
         puts(fb, pitch, bpp, &x, &y, "Failed to read file", COLOR_RED, max_width, max_height);
     }
 
+    puts(fb, pitch, bpp, &x, &y, "The quick brown fox jumps over the lazy dog. 0123456789The quick brown fox jumps over the lazy dog. 0123456789The quick brown fox jumps over the lazy dog. 0123456789", COLOR_WHITE, max_width, max_height);
+
     // We're done, just hang...
     hcf();
 }
