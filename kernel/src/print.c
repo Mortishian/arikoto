@@ -15,8 +15,26 @@ struct psf1_header {
     uint8_t charsize;
 };
 
+static uint32_t *framebuffer = NULL;
+static size_t pitch = 0;
+static size_t bpp = 0;
+static size_t cursor_x = 0;
+static size_t cursor_y = 0;
+static size_t screen_width = 0;
+static size_t screen_height = 0;
+
+void init_framebuffer(uint32_t *fb, size_t p, size_t bpp_val, size_t width, size_t height) {
+    framebuffer = fb;
+    pitch = p;
+    bpp = bpp_val;
+    screen_width = width;
+    screen_height = height;
+    cursor_x = 0;
+    cursor_y = 0;
+}
+
 // Function to render a single character.
-void putchar(uint32_t *fb, size_t pitch, size_t bpp, size_t x, size_t y, char c, uint32_t color) {
+void putchar(char c, uint32_t color) {
     struct psf1_header *font = (struct psf1_header *)&_binary_matrix_psf_start;
     uint8_t *glyphs = (uint8_t *)(&_binary_matrix_psf_start + sizeof(struct psf1_header));
 
@@ -25,32 +43,31 @@ void putchar(uint32_t *fb, size_t pitch, size_t bpp, size_t x, size_t y, char c,
     for (size_t py = 0; py < font->charsize; py++) {
         for (size_t px = 0; px < 8; px++) {
             if (glyph[py] & (0x80 >> px)) {
-                size_t pixel_index = (y + py) * (pitch / (bpp / 8)) + (x + px);
-                fb[pixel_index] = color;
+                size_t pixel_index = (cursor_y + py) * (pitch / (bpp / 8)) + (cursor_x + px);
+                framebuffer[pixel_index] = color;
             }
         }
     }
 }
 
 // Function to render a string with automatic line breaks and overwriting text
-void puts(uint32_t *fb, size_t pitch, size_t bpp, size_t *x, size_t *y,
-          const char *str, uint32_t color, size_t screen_width, size_t screen_height) {
+void puts(const char *str, uint32_t color) {
     while (*str) {
-        if (*str == '\n' || *x + 8 >= screen_width) {
-            *x = 0; *y += 16;  // Move to next line
+        if (*str == '\n' || cursor_x + 8 >= screen_width) {
+            cursor_x = 0; cursor_y += 16;  // Move to next line
         }
 
         if (*str != '\n') {
-            putchar(fb, pitch, bpp, *x, *y, *str, color);  // Draw character
-            *x += 8;  // Advance position
+            putchar(*str, color);  // Draw character
+            cursor_x += 8;  // Advance position
         }
 
         // Reset to top of screen if exceeding height
-        if (*y + 16 >= screen_height) *y = 0;
+        if (cursor_y + 16 >= screen_height) cursor_y = 0;
 
         str++;
     }
 
     // After string, move to next line
-    *x = 0; *y += 16;
+    cursor_x = 0; cursor_y += 16;
 }

@@ -1,5 +1,4 @@
-#ifndef VFS_H
-#define VFS_H
+#pragma once
 
 #include <stddef.h>
 
@@ -30,5 +29,3 @@ int ramdisk_list(char *buffer, size_t size);
 extern struct vfs_operations ramdisk_ops;
 
 extern char buffer[1024];
-
-#endif

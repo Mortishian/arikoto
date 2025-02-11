@@ -1,5 +1,4 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#pragma once
 
 #include <stddef.h>
 
@@ -24,5 +23,3 @@ size_t get_used_memory(void);
 
 // Get free memory size in bytes
 size_t get_free_memory(void);
-
-#endif
