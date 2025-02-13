@@ -16,9 +16,17 @@ Full CMake build system with seperated includes and src.
 
 ## Building and Testing
 
+### Linux
+
 Run `mkdir build && cd build` in the Arikoto root folder. Type `cmake ..`. The project will be configured automatically.
 
 From here, you can type `make`, `make run`, `make run-kvm`, `make run-uefi` and (my favourite) `make run-uefi-kvm`.
+
+### macOS
+
+However, if you are on macOS, you will need to install Linux.
+
+If you are not building on Linux and are instead using macOS, do not expect any support for problems that are encountered.
 
 ## Why CMake for an OS project?
 
