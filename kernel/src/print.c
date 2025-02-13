@@ -37,8 +37,14 @@ void init_framebuffer(uint32_t *fb, size_t p, size_t bpp_val, size_t width, size
 void putchar(char c, uint32_t color) {
     struct psf1_header *font = (struct psf1_header *)&_binary_matrix_psf_start;
     uint8_t *glyphs = (uint8_t *)(&_binary_matrix_psf_start + sizeof(struct psf1_header));
-
     uint8_t *glyph = glyphs + (c * font->charsize);
+
+    for (size_t py = 0; py < 16; py++) {
+        for (size_t px = 0; px < 8; px++) {
+            size_t pixel_index = (cursor_y + py) * (pitch / (bpp / 8)) + (cursor_x + px);
+            framebuffer[pixel_index] = COLOR_BLACK;
+        }
+    }
 
     for (size_t py = 0; py < font->charsize; py++) {
         for (size_t px = 0; px < 8; px++) {
@@ -54,12 +60,12 @@ void putchar(char c, uint32_t color) {
 void puts(const char *str, uint32_t color) {
     while (*str) {
         if (*str == '\n' || cursor_x + 8 >= screen_width) {
-            cursor_x = 0; cursor_y += 16;  // Move to next line
+            cursor_x = 0; cursor_y += 16;
         }
 
         if (*str != '\n') {
-            putchar(*str, color);  // Draw character
-            cursor_x += 8;  // Advance position
+            putchar(*str, color);
+            cursor_x += 8;
         }
 
         // Reset to top of screen if exceeding height

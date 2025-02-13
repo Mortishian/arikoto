@@ -11,8 +11,8 @@ static void hcf(void) {
     }
 }
 
-long display_framebuffer_info();
-long display_memory_info();
+void display_info(void);
+void vfs_test(void);
 
 // Helper function to convert integer to string
 static inline char* itoa(int num, char *str, int base) {

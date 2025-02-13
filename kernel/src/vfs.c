@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <vfs.h>
+#include <print.h>
 
 #define MAX_MOUNT_POINTS 10
 #define MAX_FILES 10
@@ -36,13 +37,17 @@ struct mount_point {
 size_t mount_count = 0;
 
 int ramdisk_create(const char *name, const char *data) {
-    if (file_count >= MAX_FILES) return -1;
+    if (file_count >= MAX_FILES) {
+        puts("Failed to create file: maximum files reached", COLOR_RED);
+        return -1;
+    }
 
     struct vfs_file *file = &file_table[file_count++];
     strcpy(file->name, name);
     strcpy(file->data, data);
     file->size = strlen(data);
 
+    puts("File created successfully", COLOR_GREEN);
     return 0;
 }
 
@@ -51,9 +56,11 @@ int ramdisk_read(const char *path, char *buffer, size_t size) {
         if (strcmp(file_table[i].name, path) == 0) {
             size_t to_copy = file_table[i].size < size ? file_table[i].size : size;
             memcpy(buffer, file_table[i].data, to_copy);
+            puts(buffer, COLOR_WHITE);
             return 0;
         }
     }
+    puts("Failed to read file", COLOR_RED);
     return -1;
 }
 
@@ -64,9 +71,11 @@ int ramdisk_delete(const char *path) {
                 file_table[j] = file_table[j + 1];
             }
             file_count--;
+            puts("File deleted successfully", COLOR_GREEN);
             return 0;
         }
     }
+    puts("Failed to delete file", COLOR_RED);
     return -1;
 }
 

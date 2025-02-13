@@ -7,13 +7,10 @@
 #include <print.h>
 #include <memory.h>
 #include <vfs.h>
+#include <scheduler.h>
 
 // Kernel main function.
 void kmain(void) {
-
-    // Start PMM
-    init_pmm();
-
     // Ensure we have a framebuffer.
     if (framebuffer_info.response == NULL || framebuffer_info.response->framebuffer_count < 1) {
         hcf();
@@ -27,49 +24,23 @@ void kmain(void) {
     size_t max_width = framebuffer->width;
     size_t max_height = framebuffer->height;
 
-    // Clear the screen
-    for (size_t i = 0; i < framebuffer->height * framebuffer->width; i++) {
-        fb[i] = COLOR_BLACK;
-    }
-
     // Start framebuffer
     init_framebuffer(fb, pitch, bpp, max_width, max_height);
 
     puts("[Arikoto 0.0.2]", COLOR_RED);
 
-    display_framebuffer_info();
+    // Start PMM
+    init_pmm();
 
-    display_memory_info();
+    // Start scheduler
+    scheduler_t scheduler;
+    scheduler_init(&scheduler, 2); // Set the time quantum to 2 (arbitrary units)
 
-    vfs_mount("/", &ramdisk_ops);
+    scheduler_add_process(&scheduler, 1, display_info);
+    scheduler_add_process(&scheduler, 2, vfs_test);
 
-    if (vfs_create("/hello.txt", "Welcome to Arikoto!!!") == 0) {
-        puts("File created successfully", COLOR_GREEN);
-    } else {
-        puts("Failed to create file", COLOR_RED);
-    }
-
-    if (vfs_read("/hello.txt", buffer, sizeof(buffer)) == 0) {
-        puts(buffer, COLOR_WHITE);
-    } else {
-        puts("Failed to read file", COLOR_RED);
-    }
-
-    if (vfs_delete("/hello.txt") == 0) {
-        puts("File deleted successfully", COLOR_GREEN);
-    } else {
-        puts("Failed to delete file", COLOR_RED);
-    }
-
-    if (vfs_read("/hello.txt", buffer, sizeof(buffer)) == 0) {
-        puts(buffer, COLOR_WHITE);
-    } else {
-        puts("Failed to read file", COLOR_RED);
-    }
-
-    puts("The quick brown fox jumps over the lazy dog. 0123456789The quick brown fox jumps over the lazy dog. 0123456789The quick brown fox jumps over the lazy dog. 0123456789", COLOR_WHITE);
+    scheduler_run(&scheduler);
 
     // We're done, just hang...
     hcf();
-
 }

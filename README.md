@@ -10,6 +10,7 @@ Written in C (with partial help from artificial intelligence because obviously I
 
 Some memory support and listing upon boot.
 Simple VFS/ramdisk functionality.
+Some kind of scheduler.
 
 Full CMake build system with seperated includes and src.
 

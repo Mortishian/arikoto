@@ -35,6 +35,7 @@ add_compile_options(
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/freestnd-c-hdrs-0bsd
+    ${CMAKE_CURRENT_SOURCE_DIR}/cc-runtime
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
