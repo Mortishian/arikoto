@@ -4,9 +4,9 @@
 #include <vfs.h>
 #include <print.h>
 
-#define MAX_MOUNT_POINTS 10
-#define MAX_FILES 10
-#define MAX_FILE_SIZE 256
+#define MAX_MOUNT_POINTS 8192
+#define MAX_FILES 8192
+#define MAX_FILE_SIZE 8192
 
 char buffer[1024];
 

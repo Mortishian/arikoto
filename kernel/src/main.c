@@ -28,6 +28,11 @@ void kmain(void) {
     init_framebuffer(fb, pitch, bpp, max_width, max_height);
 
     puts("[Arikoto 0.0.2]", COLOR_RED);
+    puts("   _|_|              _|  _|                    _|                ", COLOR_BLUE);
+    puts(" _|    _|  _|  _|_|      _|  _|      _|_|    _|_|_|_|    _|_|    ", COLOR_CYAN);
+    puts(" _|_|_|_|  _|_|      _|  _|_|      _|    _|    _|      _|    _|  ", COLOR_GREEN);
+    puts(" _|    _|  _|        _|  _|  _|    _|    _|    _|      _|    _|  ", COLOR_MAGENTA);
+    puts(" _|    _|  _|        _|  _|    _|    _|_|        _|_|    _|_|    ", COLOR_YELLOW);
 
     // Start PMM
     init_pmm();
