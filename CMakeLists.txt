@@ -10,7 +10,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/kernel ${CMAKE_BINARY_DIR}/kernel)
 
 # Prevent recloning directories everytime we build
 add_custom_target(limine-setup
-    COMMAND test -d limine || (git clone https://github.com/limine-bootloader/limine.git --branch=v8.x-binary --depth=1 && make -C limine)
+    COMMAND test -d limine || (git clone https://github.com/limine-bootloader/limine.git --branch=v9.x-binary --depth=1 && make -C limine)
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
