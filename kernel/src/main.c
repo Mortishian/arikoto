@@ -32,7 +32,8 @@ void kmain(void) {
     puts(" _|    _|  _|  _|_|      _|  _|      _|_|    _|_|_|_|    _|_|    ", COLOR_CYAN);
     puts(" _|_|_|_|  _|_|      _|  _|_|      _|    _|    _|      _|    _|  ", COLOR_GREEN);
     puts(" _|    _|  _|        _|  _|  _|    _|    _|    _|      _|    _|  ", COLOR_MAGENTA);
-    puts(" _|    _|  _|        _|  _|    _|    _|_|        _|_|    _|_|    ", COLOR_YELLOW);
+    puts(" _|    _|  _|        _|  _|    _|    _|_|        _|_|    _|_|   \n ", COLOR_YELLOW);
+    puts("Check out arikoto.nerdnextdoor.net!", COLOR_WHITE);
 
     // Start PMM
     init_pmm();
