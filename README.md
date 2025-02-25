@@ -32,7 +32,7 @@ If you are not building on Linux and are instead using macOS, do not expect any 
 
 While Arikoto is my personal OS project, helping to fix bugs and issues in Arikoto helps a lot. Any major changes to functionality or any new features to be added need to be discussed in GitHub Issues. 
 
-Main conversation related to Arikoto will take place on the [Zed code editor channel](https://zed.dev/channel/Arikoto-19596). Eventually, more areas will be set up.
+Main conversation related to Arikoto will take place on the [Zed code editor channel](https://zed.dev/channel/Arikoto-19596) and on the [Discord server](https://discord.gg/UczSZb7s7B).
 
 ## Why CMake for an OS project?
 
