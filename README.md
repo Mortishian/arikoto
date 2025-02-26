@@ -28,6 +28,12 @@ However, if you are on macOS, you will need to install Linux.
 
 If you are not building on Linux and are instead using macOS, do not expect any support for problems that are encountered.
 
+### Windows
+
+While really not recommended, you could use WSL.
+
+I still recommend you use Linux to build Arikoto.
+
 ## Ways to Contribute
 
 While Arikoto is my personal OS project, helping to fix bugs and issues in Arikoto helps a lot. Any major changes to functionality or any new features to be added need to be discussed in GitHub Issues. 
