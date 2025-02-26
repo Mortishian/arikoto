@@ -206,7 +206,7 @@ export class MarkdownBlock extends MarkdownElement {
 		return marked.parse(this._mdContent);
 	}
 
-	static renderer =  __call$(Object,"assign",[{heading(text,level,_raw,slugger){level=Math.min(6,level+(this.hmin-1));const id=slugger.slug(text);const hlinks=this.hlinks;let content;if(hlinks===null){content=text;}else{content=`<a href="#${id}" class="anchor">`;if(hlinks===""){content+=text+"</a>";}else{content+=hlinks+"</a>"+text;}}return`
+	static renderer =  window.__call$(Object,"assign",[{heading(text,level,_raw,slugger){level=Math.min(6,level+(this.hmin-1));const id=slugger.slug(text);const hlinks=this.hlinks;let content;if(hlinks===null){content=text;}else{content=`<a href="#${id}" class="anchor">`;if(hlinks===""){content+=text+"</a>";}else{content+=hlinks+"</a>"+text;}}return`
 				<h${level} id="${id}">
 					${content}
 				</h${level}>`;},code(code,language,escaped){if(this._contentFromHTML){code=__call$(code,"replace",[/&amp;(?=[lg]t;)/g,"&"]);}else{code=__call$(code,"replace",[/</g,"&lt;"]);}return`<pre class="language-${language}"><code>${code}</code></pre>`;}},MarkdownSpan.renderer]) ;
