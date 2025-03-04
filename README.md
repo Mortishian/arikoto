@@ -32,13 +32,13 @@ If you are not building on Linux and are instead using macOS, do not expect any 
 
 While really not recommended, you could use WSL.
 
-I still recommend you use Linux to build Arikoto.
+I still recommend you use Linux natively to build Arikoto.
 
 ## Ways to Contribute
 
-While Arikoto is my personal OS project, helping to fix bugs and issues in Arikoto helps a lot. Any major changes to functionality or any new features to be added need to be discussed in GitHub Issues. 
+While Arikoto is my personal OS project, helping to fix bugs and issues in Arikoto helps a lot. Any major changes to functionality or any new features to be added need to be discussed using the methods below.
 
-Main conversation related to Arikoto will take place on the [Zed code editor channel](https://zed.dev/channel/Arikoto-19596) and on the [Discord server](https://discord.gg/UczSZb7s7B).
+Main conversation related to Arikoto will take place on the [Zed code editor channel](https://zed.dev/channel/Arikoto-19596), on the [Discord server](https://discord.gg/UczSZb7s7B) and on the GitHub Discussions.
 
 ## Why CMake for an OS project?
 
