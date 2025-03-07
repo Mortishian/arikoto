@@ -20,7 +20,7 @@ int scheduler_add_process(scheduler_t *scheduler, int id, task_func_t task) {
     return 0;
 }
 
-static void run_process(process_t *p, int quantum) {
+static void run_process(process_t *p) {
     if (p->finished) {
         return;
     }
@@ -29,10 +29,22 @@ static void run_process(process_t *p, int quantum) {
 }
 
 void scheduler_run(scheduler_t *scheduler) {
-    for (int i = 0; i < scheduler->process_count; i++) {
-        process_t *p = &scheduler->processes[i];
-        run_process(p, scheduler->time_quantum);
+    if (!scheduler || scheduler->process_count == 0) {
+        puts("Error: Invalid scheduler state", COLOR_RED);
+        return;
     }
 
+    bool tasks_remaining = true;
+    while (tasks_remaining) {
+        tasks_remaining = false;
+        for (int i = 0; i < scheduler->process_count; i++) {
+            process_t *p = &scheduler->processes[i];
+            if (!p->finished) {
+                tasks_remaining = true;
+                run_process(p);
+                p->finished = true; // Mark as done after running
+            }
+        }
+    }
     puts("Scheduler has no more tasks, halting.", COLOR_WHITE);
 }

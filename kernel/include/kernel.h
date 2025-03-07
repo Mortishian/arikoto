@@ -5,7 +5,7 @@
 #include <stddef.h>
 
 // Halt and catch fire function (obvious).
-static void hcf(void) {
+static inline __attribute__((unused)) void hcf(void) {
     for (;;) {
         asm ("hlt");
     }

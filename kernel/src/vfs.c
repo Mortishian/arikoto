@@ -26,7 +26,7 @@ struct vfs_file {
 
 // File Table
 struct vfs_file file_table[MAX_FILES];
-int file_count = 0;
+size_t file_count = 0;
 
 // Mount Point Structure
 struct mount_point {
@@ -88,13 +88,26 @@ int vfs_mount(const char *path, struct vfs_operations *ops) {
     return 0;
 }
 
-int vfs_read(const char *path, char *buffer, size_t size) {
+struct mount_point* find_mount_point(const char *path) {
     for (size_t i = 0; i < mount_count; i++) {
         if (strncmp(path, mount_table[i].path, strlen(mount_table[i].path)) == 0) {
-            return mount_table[i].ops->read(path + strlen(mount_table[i].path), buffer, size);
+            return &mount_table[i];
         }
     }
-    return -1;
+    return NULL;
+}
+
+int vfs_read(const char *path, char *buffer, size_t size) {
+    if (!path || !buffer || size == 0) {
+        return -1;
+    }
+
+    struct mount_point *mp = find_mount_point(path);
+    if (!mp || !mp->ops || !mp->ops->read) {
+        return -1;
+    }
+
+    return mp->ops->read(path + strlen(mp->path), buffer, size);
 }
 
 int vfs_delete(const char *path) {

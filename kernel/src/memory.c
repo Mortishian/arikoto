@@ -90,11 +90,15 @@ void *allocate_page() {
         if (!is_bit_set(i)) {
             set_bit(i);
             used_pages++;
-            return (void *)(i * PAGE_SIZE);
+            // Align to page boundary and validate address
+            void *addr = (void *)(i * PAGE_SIZE);
+            if ((uintptr_t)addr % PAGE_SIZE != 0) {
+                return NULL;
+            }
+            return addr;
         }
     }
-
-    return NULL; // No free pages available
+    return NULL;
 }
 
 void free_page(void *page) {
