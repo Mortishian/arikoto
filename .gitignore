@@ -2,5 +2,6 @@
 /limine
 /ovmf
 /build
+/kernel/include/limine.h
 *.iso
 *.hdd

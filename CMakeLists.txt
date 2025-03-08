@@ -70,3 +70,21 @@ add_custom_target(run-uefi-kvm
         -drive if=pflash,unit=0,format=raw,file=${CMAKE_SOURCE_DIR}/ovmf/ovmf-code-x86_64.fd,readonly=on
         -cdrom ${IMAGENAME}.iso -boot d -enable-kvm ${QEMUFLAGS}
 )
+
+# Clean targets
+set_directory_properties(PROPERTIES
+    ADDITIONAL_CLEAN_FILES "${CMAKE_BINARY_DIR}/${IMAGENAME}.iso"
+)
+
+add_custom_target(clean-extra
+    COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_BINARY_DIR}/${IMAGENAME}.iso
+)
+
+add_custom_target(distclean
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_SOURCE_DIR}/limine
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_SOURCE_DIR}/ovmf
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_SOURCE_DIR}/kernel/cc-runtime
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_SOURCE_DIR}/kernel/freestnd-c-hdrs-0bsd
+    COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_SOURCE_DIR}/kernel/include/limine.h
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_BINARY_DIR}/*
+)

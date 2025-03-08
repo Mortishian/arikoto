@@ -21,6 +21,8 @@ Run `mkdir build && cd build` in the Arikoto root folder. Type `cmake ..`. The p
 
 From here, you can type `make`, `make run`, `make run-kvm`, `make run-uefi` and (my favourite) `make run-uefi-kvm`.
 
+Running `make clean` wipes built binaries and arikoto.iso if an image was built. Running `make distclean` wipes the `limine/`, `ovmf/`, `kernel/cc-runtime/`, `kernel/freestnd-c-hdrs-0bsd/` and `build/` folders and deletes `kernel/include/limine.h`.
+
 ### macOS
 
 However, if you are on macOS, you will need to install Linux.
