@@ -19,3 +19,4 @@ extern uint8_t _binary_matrix_psf_size;
 void init_framebuffer(uint32_t *fb, size_t p, size_t bpp_val, size_t width, size_t height);
 void putchar(char c, uint32_t color);
 void puts(const char *str, uint32_t color);
+void screen_clear(void);

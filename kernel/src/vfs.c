@@ -131,3 +131,32 @@ int vfs_create(const char *path, const char *data) {
     }
     return -1;
 }
+
+int vfs_list_files(char *buffer, size_t size) {
+    if (!buffer || size == 0) {
+        return -1;
+    }
+
+    buffer[0] = '\0';
+    size_t pos = 0;
+
+    for (size_t i = 0; i < file_count; i++) {
+        const char *filename = file_table[i].name;
+        size_t name_len = strlen(filename);
+
+        if (pos + name_len + 1 >= size) {
+            break;
+        }
+
+        strcpy(buffer + pos, filename);
+        pos += name_len;
+
+        buffer[pos++] = '\0';
+    }
+
+    if (pos < size) {
+        buffer[pos] = '\0';
+    }
+
+    return 0;
+}

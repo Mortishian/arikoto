@@ -1,7 +1,6 @@
-/kernel-deps
 /limine
 /ovmf
 /build
+kernel/freestnd-c-hdrs-0bsd
+kernel/cc-runtime
 /kernel/include/limine.h
-*.iso
-*.hdd

@@ -12,6 +12,7 @@ Some memory support and listing upon boot.
 Simple VFS/ramdisk functionality.
 Working scheduler but also not really.
 Full CMake build system with seperated includes and src.
+Keyboard support and minimal shell.
 
 ## Building and Testing
 
