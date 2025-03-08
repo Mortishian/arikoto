@@ -88,16 +88,13 @@ void shell_run() {
     while (1) {
         char *input = shell_readline(PROMPT);
 
-        puts("You typed: ", COLOR_CYAN);
-        puts(input, COLOR_CYAN);
-
         if (strcmp(input, "exit") == 0) {
             puts("Shell exiting...", COLOR_YELLOW);
             return;
         }
 
         if (strlen(input) > 0) {
-            int result = shell_execute(input);
+            shell_execute(input);
         }
     }
 }
@@ -132,7 +129,7 @@ void shell_register_command(const char *name, int (*func)(int argc, char **argv)
     }
 }
 
-static int cmd_help(int argc, char **argv) {
+static int cmd_help() {
     puts("Available commands:", COLOR_WHITE);
 
     for (int i = 0; i < command_count; i++) {
@@ -150,12 +147,12 @@ static int cmd_echo(int argc, char **argv) {
     return 0;
 }
 
-static int cmd_clear(int argc, char **argv) {
+static int cmd_clear() {
     screen_clear();
     return 0;
 }
 
-static int cmd_ls(int argc, char **argv) {
+static int cmd_ls() {
     char buffer[1024];
     buffer[0] = '\0';
 
@@ -198,7 +195,7 @@ static int cmd_cat(int argc, char **argv) {
     return 0;
 }
 
-static int cmd_mem(int argc, char **argv) {
+static int cmd_mem() {
     char buf[64];
 
     puts("Memory Information:", COLOR_WHITE);
@@ -231,7 +228,7 @@ static int cmd_mem(int argc, char **argv) {
     return 0;
 }
 
-static int cmd_reboot(int argc, char **argv) {
+static int cmd_reboot() {
     puts("Rebooting system...", COLOR_RED);
 
     // Send reboot command to PS/2 controller
@@ -240,5 +237,6 @@ static int cmd_reboot(int argc, char **argv) {
     // If that doesn't work, we'll never reach here
     puts("Reboot failed, just hold down the power button at this point", COLOR_RED);
     puts("Halting here...", COLOR_RED);
-    hcf;
+    return -1;
+    hcf();
 }
