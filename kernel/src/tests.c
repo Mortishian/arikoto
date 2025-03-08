@@ -188,3 +188,8 @@ void vfs_test(void) {
     vfs_read("/roadmap.txt", buffer, sizeof(buffer));
     vfs_delete("/roadmap.txt");
 }
+
+void display_info(void) {
+    display_framebuffer_info();
+    display_memory_info();
+}
