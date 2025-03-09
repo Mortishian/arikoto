@@ -44,10 +44,10 @@ void kmain(void) {
     scheduler_t scheduler;
     scheduler_init(&scheduler, 2); // Set the time quantum to 2 (arbitrary units)
 
-    scheduler_add_process(&scheduler, 1, display_info);
-    scheduler_add_process(&scheduler, 2, vfs_test);
-    scheduler_add_process(&scheduler, 3, shell_init);
-    scheduler_add_process(&scheduler, 4, shell_run);
+    // scheduler_add_process(&scheduler, 1, display_info);
+    scheduler_add_process(&scheduler, 1, vfs_test);
+    scheduler_add_process(&scheduler, 2, shell_init);
+    scheduler_add_process(&scheduler, 3, shell_run);
 
     scheduler_run(&scheduler);
 
