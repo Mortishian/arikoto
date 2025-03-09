@@ -23,7 +23,6 @@ char *shell_readline(const char *prompt) {
         char c = keyboard_read();
 
         if (c == '\n') {
-            puts("\n", COLOR_WHITE);
             line_buffer[pos] = '\0';
             return line_buffer;
         } else if (c == '\b') {
@@ -142,7 +141,6 @@ static int cmd_help() {
 static int cmd_echo(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         puts(argv[i], COLOR_WHITE);
-        puts(" ", COLOR_WHITE);
     }
     return 0;
 }
@@ -234,9 +232,16 @@ static int cmd_reboot() {
     // Send reboot command to PS/2 controller
     outb(0x64, 0xFE);
 
+    // Wait for reboot...
+    for (volatile int i = 0; i < 10000000; i++) {
+    }
+
     // If that doesn't work, we'll never reach here
     puts("Reboot failed, just hold down the power button at this point", COLOR_RED);
     puts("Halting here...", COLOR_RED);
-    return -1;
     hcf();
+
+    /* This should not execute if hang and catch fire worked which it should, but still
+    including it because you know how compilers be. */
+    return -1;
 }
