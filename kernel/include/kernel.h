@@ -1,8 +1,10 @@
 #pragma once
 
+#include <stdarg.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 
 // Halt and catch fire function (obvious).
 static inline __attribute__((unused)) void hcf(void) {
@@ -58,4 +60,55 @@ static inline char* itoa(int num, char *str, int base) {
 
     // Just to shut the compiler up
     return 0;
+}
+
+static  __attribute__((unused)) size_t build_string(char *buffer, size_t size, ...) {
+    va_list args;
+    va_start(args, size);
+
+    size_t pos = 0;
+    char *str;
+    char num_buf[32];
+
+    while (pos < size) {
+        str = va_arg(args, char *);
+        if (str == NULL) break;
+
+        if (strcmp(str, "%d") == 0) {
+            int num = va_arg(args, int);
+            itoa(num, num_buf, 10);
+            size_t num_len = strlen(num_buf);
+            if (pos + num_len < size) {
+                strcpy(buffer + pos, num_buf);
+                pos += num_len;
+            } else {
+                goto end;
+            }
+        } else if(strcmp(str, "%s") == 0) {
+            char *insert_str = va_arg(args, char*);
+            size_t str_len = strlen(insert_str);
+             if (pos + str_len < size) {
+                strcpy(buffer + pos, insert_str);
+                pos += str_len;
+            } else {
+                goto end;
+            }
+        }
+         else {
+            size_t len = strlen(str);
+            if (pos + len < size) {
+                strcpy(buffer + pos, str);
+                pos += len;
+            } else {
+                goto end;
+            }
+        }
+    }
+
+end:
+    va_end(args);
+    if (pos < size) {
+        buffer[pos] = '\0';
+    }
+    return pos;
 }
