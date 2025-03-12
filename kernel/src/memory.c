@@ -33,7 +33,7 @@ static inline bool is_bit_set(size_t index) {
 // Initialize the physical memory manager
 void init_pmm() {
     if (memorymap_info.response == NULL) {
-        hcf();
+        panic("PANIC: Could not acquire a response from the memorymap!");
     }
 
     size_t entry_count = memorymap_info.response->entry_count;

@@ -59,7 +59,7 @@ static inline char* itoa(int num, char *str, int base) {
     }
 
     // Just to shut the compiler up
-    return 0;
+    return str;
 }
 
 static  __attribute__((unused)) size_t build_string(char *buffer, size_t size, ...) {
@@ -112,3 +112,8 @@ end:
     }
     return pos;
 }
+
+extern void panic_dump_registers(void);
+extern void panic_print_registers(uint64_t *rsp);
+
+void panic(const char *fmt, ...);

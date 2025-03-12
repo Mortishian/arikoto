@@ -46,5 +46,5 @@ void scheduler_run(scheduler_t *scheduler) {
             }
         }
     }
-    puts("Scheduler has no more tasks, halting.", COLOR_WHITE);
+    panic("PANIC: Scheduler ran out of tasks, panicking for safety.\n\n");
 }

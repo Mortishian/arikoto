@@ -50,7 +50,4 @@ void kmain(void) {
     scheduler_add_process(&scheduler, 3, shell_run);
 
     scheduler_run(&scheduler);
-
-    // We're done, just hang...
-    hcf();
 }

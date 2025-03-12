@@ -236,12 +236,10 @@ static int cmd_reboot() {
     for (volatile int i = 0; i < 10000000; i++) {
     }
 
-    // If that doesn't work, we'll never reach here
-    puts("Reboot failed, just hold down the power button at this point", COLOR_RED);
-    puts("Halting here...", COLOR_RED);
-    hcf();
+    // Okay, now this is bad
+    panic("PANIC: Arikoto failed to reboot, hold down the power button.");
 
-    /* This should not execute if hang and catch fire worked which it should, but still
-    including it because you know how compilers be. */
+    /* This should not execute because we panicked, but
+    I'm including it because you know how compilers be. */
     return -1;
 }
