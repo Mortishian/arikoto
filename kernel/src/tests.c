@@ -185,7 +185,6 @@ static void display_memory_info() {
 void vfs_test(void) {
     vfs_mount("/", &ramdisk_ops);
     vfs_create("/roadmap.txt", "Where do we go from here?\n\nList of components working, minimally implemented or still to come:\nFramebuffer: Implemented\nVFS: Minimal implementation\nScheduler: Minimal implementation\nMemory: Minimal implementation\nInput: Minimal implementation\nShell: Minimal implementation\nlibc: Still to come\nTools: Still to come\nGUI: Still to come");
-    vfs_read("/roadmap.txt", buffer, sizeof(buffer));
 }
 
 void display_info(void) {
