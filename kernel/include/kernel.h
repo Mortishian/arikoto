@@ -113,7 +113,4 @@ end:
     return pos;
 }
 
-extern void panic_dump_registers(void);
-extern void panic_print_registers(uint64_t *rsp);
-
 void panic(const char *fmt, ...);
