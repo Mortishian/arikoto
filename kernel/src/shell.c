@@ -41,7 +41,6 @@ char *shell_readline(const char *prompt) {
     }
 }
 
-
 typedef struct {
     char *name;
     int (*func)(int argc, char **argv);
@@ -50,13 +49,13 @@ typedef struct {
 static command_t commands[MAX_COMMANDS];
 static int command_count = 0;
 
-static int cmd_help(int argc, char **argv);
+static int cmd_help();
 static int cmd_echo(int argc, char **argv);
-static int cmd_clear(int argc, char **argv);
-static int cmd_ls(int argc, char **argv);
+static int cmd_clear();
+static int cmd_ls();
 static int cmd_cat(int argc, char **argv);
-static int cmd_mem(int argc, char **argv);
-static int cmd_reboot(int argc, char **argv);
+static int cmd_mem();
+static int cmd_reboot();
 
 void shell_init() {
     shell_register_command("help", cmd_help);

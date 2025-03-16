@@ -14,8 +14,8 @@ static bool alt_pressed = false;
 static bool extended_key = false;
 
 static char key_buffer[KEYBOARD_BUFFER_SIZE];
-static int buffer_start = 0;
-static int buffer_end = 0;
+static volatile int buffer_start = 0;
+static volatile int buffer_end = 0;
 
 static const char scan_code_ascii[] = {
     0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
@@ -133,28 +133,29 @@ void keyboard_callback() {
 }
 
 char keyboard_read() {
-    while (buffer_start == buffer_end) {
+   if(buffer_start == buffer_end) {
         uint8_t status = inb(PS2_STATUS_PORT);
 
         if (status & 1) {
             keyboard_callback();
-
-            // If we got something, break
-            if (buffer_start != buffer_end) {
-                break;
-            }
         }
+   }
 
-        for (volatile int i = 0; i < 10000; i++) {}
-    }
+   if(buffer_start != buffer_end){
+        char c = key_buffer[buffer_start];
+        buffer_start = (buffer_start + 1) % KEYBOARD_BUFFER_SIZE;
+        return c;
+   }
 
-    char c = key_buffer[buffer_start];
-    buffer_start = (buffer_start + 1) % KEYBOARD_BUFFER_SIZE;
-    return c;
+   return '\0'; // Return null character if no key
 }
 
 bool keyboard_has_key() {
-    keyboard_callback();
+     // Poll the keyboard to fill the buffer (non-blocking)
+    uint8_t status = inb(PS2_STATUS_PORT);
+    if (status & 1) {
+        keyboard_callback(); // Process *before* checking the buffer.
+    }
     return buffer_start != buffer_end;
 }
 
