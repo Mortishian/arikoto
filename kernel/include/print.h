@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-// Predefined color constants (RGB with 8-bit per channel)
+/* Predefined color constants (RGB with 8-bit per channel) */
 #define COLOR_BLACK   0x000000
 #define COLOR_WHITE   0xFFFFFF
 #define COLOR_RED     0xFF0000

@@ -14,7 +14,7 @@ static size_t total_pages = 0;
 
 static size_t used_pages = 0;
 
-// Helper macros for bitmap manipulation
+/* Helper macros for bitmap manipulation */
 #define BITMAP_INDEX(addr) ((addr) / PAGE_SIZE / 8)
 #define BITMAP_OFFSET(addr) (((addr) / PAGE_SIZE) % 8)
 
@@ -30,7 +30,7 @@ static inline bool is_bit_set(size_t index) {
     return memory_bitmap[index / 8] & (1 << (index % 8));
 }
 
-// Initialize the physical memory manager
+/* Initialize the physical memory manager */
 void init_pmm() {
     if (memorymap_info.response == NULL) {
         panic("PANIC: Could not acquire a response from the memorymap!");
@@ -39,12 +39,12 @@ void init_pmm() {
     size_t entry_count = memorymap_info.response->entry_count;
     struct limine_memmap_entry **entries = memorymap_info.response->entries;
 
-    // Zero out the bitmap
+    /* Zero out the bitmap */
     for (size_t i = 0; i < BITMAP_SIZE; i++) {
         memory_bitmap[i] = 0;
     }
 
-    // Mark all usable memory in the bitmap
+    /* Mark all usable memory in the bitmap */
     for (size_t i = 0; i < entry_count; i++) {
         struct limine_memmap_entry *entry = entries[i];
 
@@ -55,16 +55,16 @@ void init_pmm() {
             for (uintptr_t addr = start; addr < end; addr += PAGE_SIZE) {
                 size_t index = BITMAP_INDEX(addr);
                 if (index >= BITMAP_SIZE * 8) {
-                    continue; // Out of bitmap range
+                    continue; /* Out of bitmap range */
                 }
 
-                clear_bit(index); // Mark as free
+                clear_bit(index); /* Mark as free */
                 total_pages++;
             }
         }
     }
 
-    // Mark kernel and module memory as used
+    /* Mark kernel and module memory as used */
     for (size_t i = 0; i < entry_count; i++) {
         struct limine_memmap_entry *entry = entries[i];
 
@@ -75,10 +75,10 @@ void init_pmm() {
             for (uintptr_t addr = start; addr < end; addr += PAGE_SIZE) {
                 size_t index = BITMAP_INDEX(addr);
                 if (index >= BITMAP_SIZE * 8) {
-                    continue; // Out of bitmap range
+                    continue; /* Out of bitmap range */
                 }
 
-                set_bit(index); // Mark as used
+                set_bit(index); /* Mark as used */
                 used_pages++;
             }
         }
@@ -90,7 +90,7 @@ void *allocate_page() {
         if (!is_bit_set(i)) {
             set_bit(i);
             used_pages++;
-            // Align to page boundary and validate address
+            /* Align to page boundary and validate address */
             void *addr = (void *)(i * PAGE_SIZE);
             if ((uintptr_t)addr % PAGE_SIZE != 0) {
                 return NULL;
@@ -106,7 +106,7 @@ void free_page(void *page) {
     size_t index = BITMAP_INDEX(addr);
 
     if (index >= BITMAP_SIZE * 8 || !is_bit_set(index)) {
-        return; // Invalid page or already free
+        return; /* Invalid page or already free */
     }
 
     clear_bit(index);

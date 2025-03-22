@@ -2,7 +2,6 @@
 #include <print.h>
 #include <stdarg.h>
 
-// This is only for panic, won't be used anywhere else... yet.
 static void panic_vfprintf(const char *fmt, va_list args) {
     char buffer[256];
     size_t pos = 0;

@@ -148,14 +148,14 @@ char keyboard_read() {
         return c;
    }
 
-   return '\0'; // Return null character if no key
+   return '\0';
 }
 
 bool keyboard_has_key() {
-     // Poll the keyboard to fill the buffer (non-blocking)
+     /* Poll the keyboard to fill the buffer (non-blocking) */
     uint8_t status = inb(PS2_STATUS_PORT);
     if (status & 1) {
-        keyboard_callback(); // Process *before* checking the buffer.
+        keyboard_callback(); /* Process *before* checking the buffer */
     }
     return buffer_start != buffer_end;
 }

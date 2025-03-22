@@ -229,17 +229,19 @@ static int cmd_mem() {
 static int cmd_reboot() {
     puts("Rebooting system...", COLOR_RED);
 
-    // Send reboot command to PS/2 controller
+    /* Send reboot command to PS/2 controller */
     outb(0x64, 0xFE);
 
-    // Wait for reboot...
+    /* Wait for reboot...*/
     for (volatile int i = 0; i < 10000000; i++) {
     }
 
-    // Okay, now this is bad
+    /* Okay, now this is bad */
     panic("PANIC: Arikoto failed to reboot, hold down the power button.");
 
-    /* This should not execute because we panicked, but
-    I'm including it because you know how compilers be. */
+    /*
+    * This should not execute because we panicked, but
+    * I'm including it because you know how compilers be.
+    */
     return -1;
 }

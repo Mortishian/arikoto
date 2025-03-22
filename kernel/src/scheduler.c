@@ -42,7 +42,7 @@ void scheduler_run(scheduler_t *scheduler) {
             if (!p->finished) {
                 tasks_remaining = true;
                 run_process(p);
-                p->finished = true; // Mark as done after running
+                p->finished = true;
             }
         }
     }

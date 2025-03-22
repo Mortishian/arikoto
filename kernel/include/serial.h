@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-// IO Port functions
+/* IO Port functions */
 static inline uint8_t inb(uint16_t port) {
     uint8_t ret;
     asm volatile ("inb %1, %0" : "=a"(ret) : "Nd"(port));

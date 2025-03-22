@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <string.h>
 
-// Halt and catch fire function (obvious).
+/* Halt and catch fire function (obvious) */
 static inline __attribute__((unused)) void hcf(void) {
     for (;;) {
         asm ("hlt");
@@ -16,38 +16,38 @@ static inline __attribute__((unused)) void hcf(void) {
 void display_info(void);
 void vfs_test(void);
 
-// Helper function to convert integer to string
+/* Helper function to convert integer to string (itoa) */
 static inline char* itoa(int num, char *str, int base) {
     int i = 0;
     bool isNegative = false;
 
-    // Handle 0 explicitly, otherwise empty string is printed
+    /* Handle 0 explicitly, otherwise empty string is printed */
     if (num == 0) {
         str[i++] = '0';
         str[i] = '\0';
         return str;
     }
 
-    // Handle negative numbers only if base is 10
+    /* Handle negative numbers only if base is 10 */
     if (num < 0 && base == 10) {
         isNegative = true;
         num = -num;
     }
 
-    // Process individual digits
+    /* Process individual digits */
     while (num != 0) {
         int rem = num % base;
         str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
         num = num / base;
     }
 
-    // Append negative sign for negative numbers
+    /* Append negative sign for negative numbers */
     if (isNegative)
         str[i++] = '-';
 
     str[i] = '\0';
 
-    // Reverse the string
+    /* Reverse the string */
     int start = 0;
     int end = i - 1;
     while (start < end) {
@@ -58,7 +58,6 @@ static inline char* itoa(int num, char *str, int base) {
         end--;
     }
 
-    // Just to shut the compiler up
     return str;
 }
 
@@ -70,7 +69,7 @@ static  __attribute__((unused)) size_t build_string(char *buffer, size_t size, .
     char *str;
     char num_buf[32];
 
-    while (pos < size) {
+    while (pos < size - 1) { /* Leave room for null terminator */
         str = va_arg(args, char *);
         if (str == NULL) break;
 
@@ -82,33 +81,27 @@ static  __attribute__((unused)) size_t build_string(char *buffer, size_t size, .
                 strcpy(buffer + pos, num_buf);
                 pos += num_len;
             } else {
-                goto end;
+                break;
             }
-        } else if(strcmp(str, "%s") == 0) {
+        } else if (strcmp(str, "%s") == 0) {
             char *insert_str = va_arg(args, char*);
+            if (insert_str == NULL) continue; /* Skip null strings */
             size_t str_len = strlen(insert_str);
-             if (pos + str_len < size) {
+            if (pos + str_len < size) {
                 strcpy(buffer + pos, insert_str);
                 pos += str_len;
             } else {
-                goto end;
+                break;
             }
-        }
-         else {
+        } else {
             size_t len = strlen(str);
             if (pos + len < size) {
                 strcpy(buffer + pos, str);
                 pos += len;
             } else {
-                goto end;
+                break;
             }
         }
-    }
-
-end:
-    va_end(args);
-    if (pos < size) {
-        buffer[pos] = '\0';
     }
     return pos;
 }

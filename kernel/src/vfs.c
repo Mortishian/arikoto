@@ -16,25 +16,25 @@
 
 char buffer[1024];
 
-// Ramdisk operations
+/* Ramdisk operations */
 struct vfs_operations ramdisk_ops = {
     .read = ramdisk_read,
     .delete = ramdisk_delete,
     .create = ramdisk_create,
 };
 
-// File structure
+/* File structure */
 struct vfs_file {
     char name[MAX_FILE_NAME_LENGTH];
     char data[MAX_FILE_SIZE];
     size_t size;
 };
 
-// File table
+/* File table */
 struct vfs_file file_table[MAX_FILES];
 size_t file_count = 0;
 
-// Mount point structure
+/* Mount point structure */
 struct mount_point {
     char path[MAX_MOUNT_PATH_LENGTH];
     struct vfs_operations *ops;

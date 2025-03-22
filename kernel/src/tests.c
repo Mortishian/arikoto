@@ -8,12 +8,12 @@
 #include <vfs.h>
 
 static void display_framebuffer_info() {
-    // Get framebuffer information
+    /* Get framebuffer information */
     uint32_t width = framebuffer_info.response->framebuffers[0]->width;
     uint32_t height = framebuffer_info.response->framebuffers[0]->height;
     uint32_t bpp_info = framebuffer_info.response->framebuffers[0]->bpp;
 
-    puts("Framebuffer Info:", COLOR_WHITE); // Title
+    puts("Framebuffer Info:", COLOR_WHITE);
 
     char buffer[64];
 
@@ -79,8 +79,8 @@ static void display_framebuffer_info() {
 }
 
 static void display_memory_info() {
-    // Display total memory information
-    puts("Memory Info:", COLOR_WHITE); // Title
+    /* Display total memory information */
+    puts("Memory Info:", COLOR_WHITE);
 
     char buffer[64];
     itoa(get_total_memory() / 1024, buffer, 10);
@@ -103,7 +103,7 @@ static void display_memory_info() {
     total_memory_info[i] = '\0';
     puts(total_memory_info, COLOR_WHITE);
 
-    // Display used memory information
+    /* Display used memory information */
     itoa(get_used_memory() / 1024, buffer, 10);
     char used_memory_info[128];
     i = 0;
@@ -124,7 +124,7 @@ static void display_memory_info() {
     used_memory_info[i] = '\0';
     puts(used_memory_info, COLOR_WHITE);
 
-    // Display free memory information
+    /* Display free memory information */
     itoa(get_free_memory() / 1024, buffer, 10);
     char free_memory_info[128];
     i = 0;
@@ -145,7 +145,7 @@ static void display_memory_info() {
     free_memory_info[i] = '\0';
     puts(free_memory_info, COLOR_WHITE);
 
-    // Allocate and free a page
+    /* Allocate and free a page */
     void *page1 = allocate_page();
     itoa((uintptr_t)page1, buffer, 16);
     char page_info[128];

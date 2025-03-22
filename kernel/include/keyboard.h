@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Keyboard scan codes
+/* Keyboard scan codes */
 #define KEY_ESC          0x01
 #define KEY_1            0x02
 #define KEY_2            0x03
@@ -75,11 +75,11 @@
 #define KEY_F11          0x57
 #define KEY_F12          0x58
 
-// Special keys
+/* Special keys */
 #define KEY_EXTENDED     0xE0
 #define KEY_RELEASE      0x80
 
-// Extended keys
+/* Extended keys */
 #define KEY_HOME         0xE0, 0x47
 #define KEY_UP           0xE0, 0x48
 #define KEY_PAGE_UP      0xE0, 0x49
