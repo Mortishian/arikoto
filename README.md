@@ -1,7 +1,7 @@
 # Arikoto (ありこと)
 [![CodeQL Runner](https://github.com/AFellowSpeedrunner/arikoto/actions/workflows/codeql.yml/badge.svg)](https://github.com/AFellowSpeedrunner/arikoto/actions/workflows/codeql.yml) ![loc](https://tokei.rs/b1/github/IAmTheNerdNextDoor/arikoto)
 
-Arikoto is my personal Operating System development project (which I'm hoping will be usable in the future) that is inspired by and is aiming to have a similar nature to [ToaruOS](https://github.com/klange/toaruos) (which is my favourite hobby OS out there and I may be slightly obsessed with it).
+Arikoto is my personal Operating System development project that is inspired by and is aiming to have a similar nature to [ToaruOS](https://github.com/klange/toaruos).
 
 ## Features
 
