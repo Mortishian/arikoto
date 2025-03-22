@@ -5,6 +5,7 @@
 #include <memory.h>
 #include <vfs.h>
 #include <kernel.h>
+#include <serial.h>
 
 #define MAX_COMMANDS 32
 #define MAX_ARGS 16

@@ -3,17 +3,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// IO Port functions
-static inline uint8_t inb(uint16_t port) {
-    uint8_t ret;
-    asm volatile ("inb %1, %0" : "=a"(ret) : "Nd"(port));
-    return ret;
-}
-
-static inline void outb(uint16_t port, uint8_t val) {
-    asm volatile ("outb %0, %1" : : "a"(val), "Nd"(port));
-}
-
 // Keyboard scan codes
 #define KEY_ESC          0x01
 #define KEY_1            0x02

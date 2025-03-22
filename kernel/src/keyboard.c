@@ -2,6 +2,7 @@
 #include <print.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <serial.h>
 
 #define PS2_DATA_PORT    0x60
 #define PS2_STATUS_PORT  0x64
