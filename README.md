@@ -13,6 +13,7 @@ Simple VFS/ramdisk functionality.
 Working scheduler but also not really.
 Full CMake build system with seperated includes and src.
 Keyboard support and minimal shell.
+GDT.
 
 ## Building and Testing
 
