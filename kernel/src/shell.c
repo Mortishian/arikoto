@@ -152,7 +152,7 @@ static int cmd_clear() {
 
 static int cmd_ls() {
     char buffer[1024];
-    buffer[0] = '\0';
+    memset(buffer, 0, sizeof(buffer));
 
     int result = vfs_list_files(buffer, sizeof(buffer));
 
@@ -181,6 +181,7 @@ static int cmd_cat(int argc, char **argv) {
     }
 
     char buffer[1024];
+    memset(buffer, 0, sizeof(buffer));
 
     if (vfs_read(argv[1], buffer, sizeof(buffer)) >= 0) {
         puts(buffer, COLOR_WHITE);
@@ -194,34 +195,32 @@ static int cmd_cat(int argc, char **argv) {
 }
 
 static int cmd_mem() {
-    char buf[64];
+    char totalbuffer[64];
+    char usedbuffer[64];
+    char freebuffer[64];
 
     puts("Memory Information:", COLOR_WHITE);
 
-    size_t total = get_total_memory() / 1024;
-    size_t used = get_used_memory() / 1024;
-    size_t free = get_free_memory() / 1024;
+    size_t total_kb = get_total_memory() / 1024;
+    size_t used_kb = get_used_memory() / 1024;
+    size_t free_kb = get_free_memory() / 1024;
 
-    puts("  Total: ", COLOR_WHITE);
-    itoa(total, buf, 10);
-    puts(buf, COLOR_GREEN);
-    puts(" KB", COLOR_WHITE);
+    size_t total_gb = total_kb / (1024 * 1024);
+    size_t used_gb = used_kb / (1024 * 1024);
+    size_t free_gb = free_kb / (1024 * 1024);
 
-    puts("  Used:  ", COLOR_WHITE);
-    itoa(used, buf, 10);
-    puts(buf, COLOR_YELLOW);
-    puts(" KB (", COLOR_WHITE);
-    itoa((used * 100) / total, buf, 10);
-    puts(buf, COLOR_YELLOW);
-    puts("%)", COLOR_WHITE);
+    size_t total_mb_remainder = (total_kb % (1024 * 1024)) * 100 / (1024 * 1024);
+    size_t used_mb_remainder = (used_kb % (1024 * 1024)) * 100 / (1024 * 1024);
+    size_t free_mb_remainder = (free_kb % (1024 * 1024)) * 100 / (1024 * 1024);
 
-    puts("  Free:  ", COLOR_WHITE);
-    itoa(free, buf, 10);
-    puts(buf, COLOR_GREEN);
-    puts(" KB (", COLOR_WHITE);
-    itoa((free * 100) / total, buf, 10);
-    puts(buf, COLOR_GREEN);
-    puts("%)", COLOR_WHITE);
+    /* Here's when I finally mastered my own build string function */
+    build_string(totalbuffer, sizeof(totalbuffer), "Total: ", "%d.%02d", total_gb, total_mb_remainder, "GB");
+    build_string(usedbuffer, sizeof(usedbuffer), "Used: ", "%d.%02d", used_gb, used_mb_remainder, "GB");
+    build_string(freebuffer, sizeof(freebuffer), "Free: ", "%d.%02d", free_gb, free_mb_remainder, "GB");
+
+    puts(totalbuffer, COLOR_WHITE);
+    puts(usedbuffer, COLOR_WHITE);
+    puts(freebuffer, COLOR_WHITE);
 
     return 0;
 }

@@ -61,16 +61,15 @@ static inline char* itoa(int num, char *str, int base) {
     return str;
 }
 
-static  __attribute__((unused)) size_t build_string(char *buffer, size_t size, ...) {
+static __attribute__((unused)) size_t build_string(char *buffer, size_t size, ...) {
     va_list args;
     va_start(args, size);
 
     size_t pos = 0;
-    char *str;
     char num_buf[32];
 
-    while (pos < size - 1) { /* Leave room for null terminator */
-        str = va_arg(args, char *);
+    while (pos < size - 1) {
+        char *str = va_arg(args, char*);
         if (str == NULL) break;
 
         if (strcmp(str, "%d") == 0) {
@@ -83,9 +82,29 @@ static  __attribute__((unused)) size_t build_string(char *buffer, size_t size, .
             } else {
                 break;
             }
+        } else if (strcmp(str, "%d.%02d") == 0) {
+            int num1 = va_arg(args, int);
+            int num2 = va_arg(args, int);
+
+            itoa(num1, num_buf, 10);
+            size_t num_len = strlen(num_buf);
+            if (pos + num_len < size) {
+                strcpy(buffer + pos, num_buf);
+                pos += num_len;
+            }
+            if (pos + 1 < size) {
+                buffer[pos++] = '.';
+            }
+            num_buf[0] = (num2 / 10) + '0';
+            num_buf[1] = (num2 % 10) + '0';
+            num_buf[2] = '\0';
+            if (pos + 2 < size) {
+                strcpy(buffer + pos, num_buf);
+                pos += 2;
+            }
         } else if (strcmp(str, "%s") == 0) {
             char *insert_str = va_arg(args, char*);
-            if (insert_str == NULL) continue; /* Skip null strings */
+            if (insert_str == NULL) continue;
             size_t str_len = strlen(insert_str);
             if (pos + str_len < size) {
                 strcpy(buffer + pos, insert_str);
@@ -103,6 +122,8 @@ static  __attribute__((unused)) size_t build_string(char *buffer, size_t size, .
             }
         }
     }
+    buffer[pos] = '\0';
+    va_end(args);
     return pos;
 }
 
