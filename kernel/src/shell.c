@@ -1,3 +1,4 @@
+
 #include <shell.h>
 #include <keyboard.h>
 #include <print.h>
@@ -15,7 +16,9 @@ static char line_buffer[SHELL_BUFFER_SIZE];
 static const char *PROMPT = "arikoto> ";
 
 char *shell_readline(const char *prompt) {
-    puts(prompt, COLOR_WHITE);
+    while (*prompt) {
+        putchar(*prompt++, COLOR_WHITE);
+    }
 
     memset(line_buffer, 0, SHELL_BUFFER_SIZE);
     int pos = 0;
@@ -25,12 +28,11 @@ char *shell_readline(const char *prompt) {
 
         if (c == '\n') {
             line_buffer[pos] = '\0';
+            putchar('\n', COLOR_WHITE);
             return line_buffer;
         } else if (c == '\b') {
             if (pos > 0) {
                 pos--;
-                putchar('\b', COLOR_WHITE);
-                putchar(' ', COLOR_WHITE);
                 putchar('\b', COLOR_WHITE);
             }
         } else if (c >= ' ' && c <= '~') {
@@ -115,8 +117,9 @@ int shell_execute(const char *command) {
         }
     }
 
-    puts("Unknown command:", COLOR_WHITE);
-    puts(argv[0], COLOR_WHITE);
+    char commandbuffer[64];
+    build_string(commandbuffer, sizeof(commandbuffer), "Unknown command: ", "%s", argv[0]);
+    puts(commandbuffer, COLOR_RED);
     return -1;
 }
 
