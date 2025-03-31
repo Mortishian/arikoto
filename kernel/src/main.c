@@ -7,7 +7,6 @@
 #include <print.h>
 #include <memory.h>
 #include <vfs.h>
-#include <scheduler.h>
 #include <keyboard.h>
 #include <shell.h>
 #include <gdt.h>
@@ -44,16 +43,13 @@ void kmain(void) {
     /* Start PMM */
     init_pmm();
 
-    /* Start scheduler */
-    scheduler_t scheduler;
-    scheduler_init(&scheduler, 2); /* Set the time quantum to 2 (arbitrary units) */
+    /* Mount VFS and create file via vfs_test */
+    vfs_test();
 
-    /*
-    * unused: scheduler_add_process(&scheduler, 1, display_info);
-    */
-    scheduler_add_process(&scheduler, 1, vfs_test);
-    scheduler_add_process(&scheduler, 2, shell_init);
-    scheduler_add_process(&scheduler, 3, shell_run);
+    /* Start shell */
+    shell_init();
+    shell_run();
 
-    scheduler_run(&scheduler);
+    /* Halt system for now */
+    hcf();
 }
