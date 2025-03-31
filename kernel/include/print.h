@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdarg.h>
 
 /* Predefined color constants (RGB with 8-bit per channel) */
 #define COLOR_BLACK   0x000000
@@ -21,5 +22,6 @@ static __attribute__((unused)) size_t cursor_y;
 
 void init_framebuffer(uint32_t *fb, size_t p, size_t bpp_val, size_t width, size_t height);
 void putchar(char c, uint32_t color);
-void puts(const char *str, uint32_t color);
 void screen_clear(void);
+int vsnprintf(char *buffer, size_t size, const char *fmt, va_list args);
+void printk(uint32_t color, const char *fmt, ...);

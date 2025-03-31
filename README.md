@@ -11,7 +11,6 @@ Arikoto is my personal Operating System development project that is inspired by 
 - Limine boot protocol
 - Memory
 - VFS/Ramdisk (not external yet)
-- Scheduler
 - CMake Build System
 - Keyboard
 - Shell

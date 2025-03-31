@@ -68,24 +68,24 @@ static void panic_vfprintf(const char *fmt, va_list args) {
         buffer[pos] = '\0';
     }
 
-    puts(buffer, COLOR_WHITE);
+    printk(COLOR_WHITE, "%s\n", buffer);
 }
 
 void panic(const char *fmt, ...) {
     asm volatile ("cli");
     screen_clear();
-    puts("****************************************\n", COLOR_RED);
-    puts("              KERNEL PANIC\n", COLOR_RED);
-    puts("****************************************\n", COLOR_RED);
+    printk(COLOR_RED, "****************************************\n");
+    printk(COLOR_RED, "              KERNEL PANIC\n");
+    printk(COLOR_RED, "****************************************\n");
 
 
-    puts("Arikoto has panicked. If this occurs frequently and you didn't cause this intentionally, please submit it on GitHub.\n\n", COLOR_WHITE);
+    printk(COLOR_WHITE, "Arikoto has panicked. If this occurs frequently and you didn't cause this intentionally, please submit it on GitHub.\n\n");
     va_list args;
     va_start(args, fmt);
     panic_vfprintf(fmt, args);
     va_end(args);
 
-    puts("System halted.", COLOR_WHITE);
+    printk(COLOR_WHITE, "System halted.");
 
     hcf();
 }

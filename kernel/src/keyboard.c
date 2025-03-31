@@ -62,8 +62,6 @@ void init_keyboard() {
     extended_key = false;
     buffer_start = 0;
     buffer_end = 0;
-
-    puts("Keyboard initialized", COLOR_GREEN);
 }
 
 void keyboard_callback() {

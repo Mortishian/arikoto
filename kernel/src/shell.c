@@ -1,4 +1,3 @@
-
 #include <shell.h>
 #include <keyboard.h>
 #include <print.h>
@@ -84,13 +83,13 @@ static int parse_args(char *input, char **argv) {
 }
 
 void shell_run() {
-    puts("Arikoto Shell started. Type commands below:", COLOR_WHITE);
+    printk(COLOR_WHITE, "Arikoto Shell started.\n");
 
     while (1) {
         char *input = shell_readline(PROMPT);
 
         if (strcmp(input, "exit") == 0) {
-            puts("Shell exiting...", COLOR_YELLOW);
+            printk(COLOR_YELLOW, "Shell exiting...\n");
             return;
         }
 
@@ -117,9 +116,7 @@ int shell_execute(const char *command) {
         }
     }
 
-    char commandbuffer[64];
-    build_string(commandbuffer, sizeof(commandbuffer), "Unknown command: ", "%s", argv[0]);
-    puts(commandbuffer, COLOR_RED);
+    printk(COLOR_RED, "Unknown command: %s\n", argv[0]);
     return -1;
 }
 
@@ -132,19 +129,26 @@ void shell_register_command(const char *name, int (*func)(int argc, char **argv)
 }
 
 static int cmd_help() {
-    puts("Available commands:", COLOR_WHITE);
+    printk(COLOR_WHITE, "Available commands:\n");
 
     for (int i = 0; i < command_count; i++) {
-        puts(commands[i].name, COLOR_GREEN);
+        printk(COLOR_GREEN, "%s\n", commands[i].name);
     }
 
     return 0;
 }
 
 static int cmd_echo(int argc, char **argv) {
+    char buffer[256] = {0};
+
     for (int i = 1; i < argc; i++) {
-        puts(argv[i], COLOR_WHITE);
+        if (i > 1) {
+            strcat(buffer, " ");
+        }
+        strcat(buffer, argv[i]);
     }
+
+    printk(COLOR_WHITE, "%s\n", buffer);
     return 0;
 }
 
@@ -162,7 +166,7 @@ static int cmd_ls() {
     if (result >= 0) {
         char *file = buffer;
         while (*file) {
-            puts(file, COLOR_CYAN);
+            printk(COLOR_CYAN, file);
 
             file += strlen(file) + 1;
 
@@ -171,7 +175,7 @@ static int cmd_ls() {
             }
         }
     } else {
-        puts("Failed to list files", COLOR_RED);
+        printk(COLOR_RED, "Failed to list files\n");
     }
 
     return 0;
@@ -179,7 +183,7 @@ static int cmd_ls() {
 
 static int cmd_cat(int argc, char **argv) {
     if (argc < 2) {
-        puts("Usage: cat <filename>", COLOR_YELLOW);
+        printk(COLOR_YELLOW, "Usage: cat <filename>\n");
         return -1;
     }
 
@@ -187,10 +191,9 @@ static int cmd_cat(int argc, char **argv) {
     memset(buffer, 0, sizeof(buffer));
 
     if (vfs_read(argv[1], buffer, sizeof(buffer)) >= 0) {
-        puts(buffer, COLOR_WHITE);
+        printk(COLOR_WHITE, "%s\n", buffer);
     } else {
-        puts("Failed to read file: ", COLOR_RED);
-        puts(argv[1], COLOR_RED);
+        printk(COLOR_RED, "Failed to read file: %s", argv[1]);
         return -1;
     }
 
@@ -202,7 +205,7 @@ static int cmd_mem() {
     char usedbuffer[64];
     char freebuffer[64];
 
-    puts("Memory Information:", COLOR_WHITE);
+    printk(COLOR_WHITE, "Memory Information:\n");
 
     size_t total_kb = get_total_memory() / 1024;
     size_t used_kb = get_used_memory() / 1024;
@@ -221,15 +224,15 @@ static int cmd_mem() {
     build_string(usedbuffer, sizeof(usedbuffer), "Used: ", "%d.%02d", used_gb, used_mb_remainder, "GB");
     build_string(freebuffer, sizeof(freebuffer), "Free: ", "%d.%02d", free_gb, free_mb_remainder, "GB");
 
-    puts(totalbuffer, COLOR_WHITE);
-    puts(usedbuffer, COLOR_WHITE);
-    puts(freebuffer, COLOR_WHITE);
+    printk(COLOR_WHITE, "%s\n", totalbuffer);
+    printk(COLOR_WHITE, "%s\n", usedbuffer);
+    printk(COLOR_WHITE, "%s\n", freebuffer);
 
     return 0;
 }
 
 static int cmd_reboot() {
-    puts("Rebooting system...", COLOR_RED);
+    printk(COLOR_RED, "Rebooting system...\n");
 
     /* Send reboot command to PS/2 controller */
     outb(0x64, 0xFE);

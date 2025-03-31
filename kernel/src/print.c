@@ -60,7 +60,7 @@ void putchar(char c, uint32_t color) {
     uint8_t *glyphs = (uint8_t *)(&_binary_matrix_psf_start + sizeof(struct psf1_header));
     uint8_t *glyph = glyphs + (c * font->charsize);
 
-    for (size_t py = 0; py < 16; py++) {
+    for (size_t py = 0; py < font->charsize; py++) {
         for (size_t px = 0; px < 8; px++) {
             size_t pixel_index = (cursor_y + py) * (pitch / (bpp / 8)) + (cursor_x + px);
             framebuffer[pixel_index] = COLOR_BLACK;
@@ -87,27 +87,71 @@ void putchar(char c, uint32_t color) {
     }
 }
 
-/* Function to render a string with automatic line breaks and overwriting text */
-void puts(const char *str, uint32_t color) {
-    while (*str) {
-        if (*str == '\n' || cursor_x + 8 >= screen_width) {
-            cursor_x = 0;
-            cursor_y += 16;
+int vsnprintf(char *buffer, size_t size, const char *fmt, va_list args) {
+    char *buf = buffer;
+    char *end = buffer + size - 1;
+    while (*fmt && buf < end) {
+        if (*fmt != '%') {
+            *buf++ = *fmt++;
+            continue;
         }
 
-        if (*str != '\n') {
-            putchar(*str, color);
-        }
+        fmt++;
 
-        if (cursor_y + 16 >= screen_height) {
-            cursor_y = 0;
+        if (*fmt == 's') {
+            char *s = va_arg(args, char *);
+            while (*s && buf < end) *buf++ = *s++;
         }
+        else if (*fmt == 'd' || *fmt == 'x') {
+            int num = va_arg(args, int);
+            int base = (*fmt == 'x') ? 16 : 10;
+            char tmp[11];
+            int i = 0;
 
-        str++;
+            if (num == 0) {
+                tmp[i++] = '0';
+            } else {
+                while (num && i < 10) {
+                    tmp[i++] = "0123456789ABCDEF"[num % base];
+                    num /= base;
+                }
+            }
+
+            while (i-- && buf < end) {
+                *buf++ = tmp[i];
+            }
+        }
+        else if (*fmt == 'C') {
+            *buf++ = '\x01';
+            *buf++ = (char)va_arg(args, int);
+        }
+        else {
+            *buf++ = *fmt;
+        }
+        fmt++;
     }
+    *buf = '\0';
+    return buf - buffer;
+}
 
-    cursor_x = 0;
-    cursor_y += 16;
+void printk(uint32_t default_color, const char *fmt, ...) {
+    char buffer[1024];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    va_end(args);
+
+    uint32_t current_color = default_color;
+    for (char *c = buffer; *c != '\0'; c++) {
+        if (*c == '\x01') {
+            c++;
+            if (*c != '\0') {
+                current_color = (uint32_t)(unsigned char)*c;
+            }
+            continue;
+        }
+        putchar(*c, current_color);
+    }
 }
 
 void screen_clear(void) {

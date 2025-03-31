@@ -29,13 +29,13 @@ void kmain(void) {
     /* Start framebuffer */
     init_framebuffer(fb, pitch, bpp, max_width, max_height);
 
-    puts("[Arikoto 0.0.2]", COLOR_RED);
-    puts("   _|_|              _|  _|                    _|                ", COLOR_BLUE);
-    puts(" _|    _|  _|  _|_|      _|  _|      _|_|    _|_|_|_|    _|_|    ", COLOR_CYAN);
-    puts(" _|_|_|_|  _|_|      _|  _|_|      _|    _|    _|      _|    _|  ", COLOR_GREEN);
-    puts(" _|    _|  _|        _|  _|  _|    _|    _|    _|      _|    _|  ", COLOR_MAGENTA);
-    puts(" _|    _|  _|        _|  _|    _|    _|_|        _|_|    _|_|   \n ", COLOR_YELLOW);
-    puts("Check out arikoto.nerdnextdoor.net!", COLOR_WHITE);
+    printk(COLOR_RED, "[Arikoto 0.0.2]\n");
+    printk(COLOR_BLUE, "   _|_|              _|  _|                    _|                \n");
+    printk(COLOR_CYAN, " _|    _|  _|  _|_|      _|  _|      _|_|    _|_|_|_|    _|_|    \n");
+    printk(COLOR_GREEN, " _|_|_|_|  _|_|      _|  _|_|      _|    _|    _|      _|    _|  \n");
+    printk(COLOR_MAGENTA, " _|    _|  _|        _|  _|  _|    _|    _|    _|      _|    _|  \n");
+    printk(COLOR_YELLOW, " _|    _|  _|        _|  _|    _|    _|_|        _|_|    _|_|   \n");
+    printk(COLOR_WHITE, "Check out arikoto.nerdnextdoor.net!\n");
 
     /* Start GDT */
     init_gdt();
