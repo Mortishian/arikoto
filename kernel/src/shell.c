@@ -257,7 +257,7 @@ static int cmd_reboot() {
 static int cmd_divzero() {
     int a = 1;
     int b = 0;
-    int result = a / b;
+    int __attribute__((unused))result = a / b;
 
     return -1;
 }
