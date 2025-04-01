@@ -1,8 +1,8 @@
 #include <keyboard.h>
-#include <print.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <serial.h>
+#include <idt.h>
 
 #define PS2_DATA_PORT    0x60
 #define PS2_STATUS_PORT  0x64
@@ -34,34 +34,11 @@ static const char scan_code_shift[] = {
     '*', 0, ' '
 };
 
-static void ps2_wait_for_controller() {
-    while ((inb(PS2_STATUS_PORT) & 2) != 0) {
-    }
-}
-
 static void keyboard_buffer_add(char c) {
     if ((buffer_end + 1) % KEYBOARD_BUFFER_SIZE != buffer_start) {
         key_buffer[buffer_end] = c;
         buffer_end = (buffer_end + 1) % KEYBOARD_BUFFER_SIZE;
     }
-}
-
-void init_keyboard() {
-    ps2_wait_for_controller();
-    outb(PS2_COMMAND_PORT, 0xAE);
-
-    inb(PS2_DATA_PORT);
-
-    ps2_wait_for_controller();
-    outb(PS2_DATA_PORT, 0xFF);
-
-    shift_pressed = false;
-    caps_lock = false;
-    ctrl_pressed = false;
-    alt_pressed = false;
-    extended_key = false;
-    buffer_start = 0;
-    buffer_end = 0;
 }
 
 void keyboard_callback() {
@@ -132,29 +109,16 @@ void keyboard_callback() {
 }
 
 char keyboard_read() {
-   if(buffer_start == buffer_end) {
-        uint8_t status = inb(PS2_STATUS_PORT);
-
-        if (status & 1) {
-            keyboard_callback();
-        }
-   }
-
-   if(buffer_start != buffer_end){
+    if (buffer_start != buffer_end) {
         char c = key_buffer[buffer_start];
         buffer_start = (buffer_start + 1) % KEYBOARD_BUFFER_SIZE;
         return c;
-   }
+    }
 
-   return '\0';
+    return '\0';
 }
 
 bool keyboard_has_key() {
-     /* Poll the keyboard to fill the buffer (non-blocking) */
-    uint8_t status = inb(PS2_STATUS_PORT);
-    if (status & 1) {
-        keyboard_callback(); /* Process *before* checking the buffer */
-    }
     return buffer_start != buffer_end;
 }
 

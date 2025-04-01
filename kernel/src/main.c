@@ -11,6 +11,7 @@
 #include <shell.h>
 #include <gdt.h>
 #include <idt.h>
+#include <pic.h>
 
 /* Kernel main function */
 void kmain(void) {
@@ -40,6 +41,10 @@ void kmain(void) {
 
     /* Start GDT */
     init_gdt();
+
+    /* Start PIC and Unmask Keyboard */
+    pic_remap(PIC1_VECTOR_OFFSET, PIC2_VECTOR_OFFSET);
+    pic_unmask_irq(1);
 
     /* Start IDT */
     init_idt();

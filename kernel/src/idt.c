@@ -1,5 +1,7 @@
 #include <stdint.h>
-#include <kernel.h>
+#include <isr.h>
+#include <irq.h>
+#include <serial.h>
 
 struct idt_entry {
     uint16_t isr_low;   /* Lower 16 bits of ISR */
@@ -29,15 +31,12 @@ void idt_set_gate(int num, uint64_t base, uint16_t selector, uint8_t flags) {
     idt[num].reserved = 0;
 }
 
-void isr0() {
-    panic("PANIC: Division by zero exception!\n");
-}
-
 void init_idt() {
     idtp.limit = (sizeof(struct idt_entry) * 256) - 1;
     idtp.base = (uint64_t)&idt;
 
-    idt_set_gate(0, (uint64_t)isr0, 0x08, 0x8E);
+    idt_set_gate(0, (uint64_t)do_isr0, 0x08, 0x8E);
+    idt_set_gate(33, (uint64_t)do_irq1, 0x08, 0x8E);
 
     asm volatile("lidt (%0)" : : "r" (&idtp));
 
