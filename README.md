@@ -5,7 +5,7 @@ Arikoto is my personal Operating System development project that is inspired by 
 
 ## Features
 
-- Written in C/inline Assembly
+- Written in C/inline and normal Assembly
 - 64-bit
 - UEFI + BIOS support
 - Limine boot protocol
@@ -15,6 +15,10 @@ Arikoto is my personal Operating System development project that is inspired by 
 - Keyboard
 - Shell
 - GDT
+- IDT
+- PIC
+- ISR (Partial)
+- IRQ (Partial)
 
 ## Building
 
@@ -28,7 +32,7 @@ Running `make clean` wipes built binaries and arikoto.iso if an image was built.
 
 ### macOS
 
-However, if you are on macOS, you will need to install Linux. If you are not building on Linux and are instead using macOS, do not expect any support for problems that are encountered.
+If you are on macOS, you will need to install Linux. If you are not building on Linux and are instead using macOS, do not expect any support for problems that are encountered.
 
 ### Windows
 
