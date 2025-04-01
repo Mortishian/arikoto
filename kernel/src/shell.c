@@ -58,6 +58,7 @@ static int cmd_ls();
 static int cmd_cat(int argc, char **argv);
 static int cmd_mem();
 static int cmd_reboot();
+static int cmd_divzero();
 
 void shell_init() {
     shell_register_command("help", cmd_help);
@@ -67,6 +68,7 @@ void shell_init() {
     shell_register_command("cat", cmd_cat);
     shell_register_command("mem", cmd_mem);
     shell_register_command("reboot", cmd_reboot);
+    shell_register_command("dividebyzero", cmd_divzero);
 }
 
 static int parse_args(char *input, char **argv) {
@@ -242,11 +244,20 @@ static int cmd_reboot() {
     }
 
     /* Okay, now this is bad */
-    panic("PANIC: Arikoto failed to reboot, hold down the power button.");
+    panic("PANIC: Arikoto failed to reboot, hold down the power button.\n");
 
     /*
     * This should not execute because we panicked, but
     * I'm including it because you know how compilers be.
     */
+    return -1;
+}
+
+/* This command is supposed to test THE ALL NEW DIVIDE BY ZERO INTERRUPT HANDLER */
+static int cmd_divzero() {
+    int a = 1;
+    int b = 0;
+    int result = a / b;
+
     return -1;
 }

@@ -10,6 +10,7 @@
 #include <keyboard.h>
 #include <shell.h>
 #include <gdt.h>
+#include <idt.h>
 
 /* Kernel main function */
 void kmain(void) {
@@ -39,6 +40,9 @@ void kmain(void) {
 
     /* Start GDT */
     init_gdt();
+
+    /* Start IDT */
+    init_idt();
 
     /* Start PMM */
     init_pmm();
