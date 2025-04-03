@@ -52,7 +52,7 @@ void init_keyboard() {
 
     outb(0x64, 0xAD);
     io_wait();
-    outb(0x64, 0xA7);
+    outb(0x64, 0xAE);
     io_wait();
 
     inb(0x60);
@@ -62,16 +62,10 @@ void init_keyboard() {
     io_wait();
     uint8_t config = inb(0x60);
     io_wait();
-    config |= 0x01;
+    config |= 1;
     outb(0x64, 0x60);
     io_wait();
     outb(0x60, config);
-    io_wait();
-
-    outb(0x64, 0xAE);
-    io_wait();
-
-    outb(0x60, 0xFF);
     io_wait();
 }
 
