@@ -4,6 +4,7 @@
 #include <limine.h>
 #include <print.h>
 #include <kernel.h>
+#include <request.h>
 
 extern uint8_t _binary_matrix_psf_start;
 extern uint8_t _binary_matrix_psf_size;
@@ -23,7 +24,7 @@ static size_t cursor_y = 0;
 static size_t screen_width = 0;
 static size_t screen_height = 0;
 
-void init_framebuffer(uint32_t *fb, size_t p, size_t bpp_val, size_t width, size_t height) {
+void setup_framebuffer(uint32_t *fb, size_t p, size_t bpp_val, size_t width, size_t height) {
     framebuffer = fb;
     pitch = p;
     bpp = bpp_val;
@@ -167,4 +168,19 @@ void screen_clear(void) {
 
     cursor_x = 0;
     cursor_y = 0;
+}
+
+void init_framebuffer() {
+    if (framebuffer_info.response == NULL || framebuffer_info.response->framebuffer_count < 1) {
+        hcf();
+    }
+
+    struct limine_framebuffer *framebuffer = framebuffer_info.response->framebuffers[0];
+    uint32_t *fb = framebuffer->address;
+    size_t pitch = framebuffer->pitch;
+    size_t bpp = framebuffer->bpp;
+    size_t max_width = framebuffer->width;
+    size_t max_height = framebuffer->height;
+
+    setup_framebuffer(fb, pitch, bpp, max_width, max_height);
 }

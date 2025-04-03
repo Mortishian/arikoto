@@ -17,6 +17,8 @@ Arikoto is my personal Operating System development project that is inspired by 
 - GDT
 - IDT
 - PIC
+- PIT
+- Timer
 - ISR (Partial)
 - IRQ (Partial)
 

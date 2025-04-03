@@ -93,6 +93,8 @@
 
 #define KEYBOARD_BUFFER_SIZE 256
 
+void init_keyboard();
+
 char keyboard_read(void);
 
 bool keyboard_has_key(void);

@@ -36,9 +36,9 @@ void init_idt() {
     idtp.base = (uint64_t)&idt;
 
     idt_set_gate(0, (uint64_t)do_isr0, 0x08, 0x8E);
+    idt_set_gate(32, (uint64_t)do_irq0, 0x08, 0x8E);
     idt_set_gate(33, (uint64_t)do_irq1, 0x08, 0x8E);
 
     asm volatile("lidt (%0)" : : "r" (&idtp));
-
     asm volatile("sti");
 }

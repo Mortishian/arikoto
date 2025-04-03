@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <serial.h>
 #include <idt.h>
+#include <pic.h>
+#include <print.h>
 
 #define PS2_DATA_PORT    0x60
 #define PS2_STATUS_PORT  0x64
@@ -35,10 +37,42 @@ static const char scan_code_shift[] = {
 };
 
 static void keyboard_buffer_add(char c) {
+    asm volatile("cli");
+
     if ((buffer_end + 1) % KEYBOARD_BUFFER_SIZE != buffer_start) {
         key_buffer[buffer_end] = c;
         buffer_end = (buffer_end + 1) % KEYBOARD_BUFFER_SIZE;
     }
+
+    asm volatile("sti");
+}
+
+void init_keyboard() {
+    while (inb(0x64) & 0x2);
+
+    outb(0x64, 0xAD);
+    io_wait();
+    outb(0x64, 0xA7);
+    io_wait();
+
+    inb(0x60);
+    io_wait();
+
+    outb(0x64, 0x20);
+    io_wait();
+    uint8_t config = inb(0x60);
+    io_wait();
+    config |= 0x01;
+    outb(0x64, 0x60);
+    io_wait();
+    outb(0x60, config);
+    io_wait();
+
+    outb(0x64, 0xAE);
+    io_wait();
+
+    outb(0x60, 0xFF);
+    io_wait();
 }
 
 void keyboard_callback() {

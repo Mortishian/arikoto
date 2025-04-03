@@ -6,6 +6,7 @@
 #include <vfs.h>
 #include <kernel.h>
 #include <serial.h>
+#include <pit.h>
 
 #define MAX_COMMANDS 32
 #define MAX_ARGS 16
@@ -59,6 +60,7 @@ static int cmd_cat(int argc, char **argv);
 static int cmd_mem();
 static int cmd_reboot();
 static int cmd_divzero();
+static int cmd_uptime();
 
 void shell_init() {
     shell_register_command("help", cmd_help);
@@ -69,6 +71,7 @@ void shell_init() {
     shell_register_command("mem", cmd_mem);
     shell_register_command("reboot", cmd_reboot);
     shell_register_command("dividebyzero", cmd_divzero);
+    shell_register_command("uptime", cmd_uptime);
 }
 
 static int parse_args(char *input, char **argv) {
@@ -85,8 +88,6 @@ static int parse_args(char *input, char **argv) {
 }
 
 void shell_run() {
-    printk(COLOR_WHITE, "Arikoto Shell started.\n");
-
     while (1) {
         char *input = shell_readline(PROMPT);
 
@@ -260,4 +261,99 @@ static int cmd_divzero() {
     int __attribute__((unused))result = a / b;
 
     return -1;
+}
+
+static int cmd_uptime() {
+    uint64_t ticks = pit_get_ticks();
+    uint64_t ms = pit_get_elapsed_ms();
+
+    uint64_t seconds = ms / 1000;
+    uint64_t minutes = seconds / 60;
+    uint64_t hours = minutes / 60;
+    uint64_t days = hours / 24;
+
+    seconds %= 60;
+    minutes %= 60;
+    hours %= 24;
+
+    printk(COLOR_WHITE, "System uptime:\n");
+
+    char buffer[128];
+
+    if (days > 0) {
+        build_string(buffer, sizeof(buffer),
+            "", "%d", days,
+            days == 1 ? " day, " : " days, ",
+            NULL);
+        printk(COLOR_WHITE, "%s", buffer);
+    }
+
+    build_string(buffer, sizeof(buffer), "", "%d", hours, ":", NULL);
+    printk(COLOR_WHITE, "%s", buffer);
+
+    if (minutes < 10) {
+        build_string(buffer, sizeof(buffer), "0", "%d", minutes, ":", NULL);
+    } else {
+        build_string(buffer, sizeof(buffer), "", "%d", minutes, ":", NULL);
+    }
+    printk(COLOR_WHITE, "%s", buffer);
+
+    if (seconds < 10) {
+        build_string(buffer, sizeof(buffer), "0", "%d", seconds, NULL);
+    } else {
+        build_string(buffer, sizeof(buffer), "", "%d", seconds, NULL);
+    }
+    printk(COLOR_WHITE, "%s\n", buffer);
+
+    build_string(buffer, sizeof(buffer), "Total milliseconds: ", "%d", ms, NULL);
+    printk(COLOR_CYAN, "%s\n", buffer);
+
+    build_string(buffer, sizeof(buffer), "Total PIT ticks: ", "%d", ticks, NULL);
+    printk(COLOR_CYAN, "%s\n", buffer);
+
+    return 0;
+}
+
+int cmd_minimal_uptime() {
+    uint64_t ms = pit_get_elapsed_ms();
+
+    uint64_t seconds = ms / 1000;
+    uint64_t minutes = seconds / 60;
+    uint64_t hours = minutes / 60;
+    uint64_t days = hours / 24;
+
+    seconds %= 60;
+    minutes %= 60;
+    hours %= 24;
+
+    printk(COLOR_WHITE, "System uptime:\n");
+
+    char buffer[128];
+
+    if (days > 0) {
+        build_string(buffer, sizeof(buffer),
+            "", "%d", days,
+            days == 1 ? " day, " : " days, ",
+            NULL);
+        printk(COLOR_WHITE, "%s", buffer);
+    }
+
+    build_string(buffer, sizeof(buffer), "", "%d", hours, ":", NULL);
+    printk(COLOR_WHITE, "%s", buffer);
+
+    if (minutes < 10) {
+        build_string(buffer, sizeof(buffer), "0", "%d", minutes, ":", NULL);
+    } else {
+        build_string(buffer, sizeof(buffer), "", "%d", minutes, ":", NULL);
+    }
+    printk(COLOR_WHITE, "%s", buffer);
+
+    if (seconds < 10) {
+        build_string(buffer, sizeof(buffer), "0", "%d", seconds, NULL);
+    } else {
+        build_string(buffer, sizeof(buffer), "", "%d", seconds, NULL);
+    }
+    printk(COLOR_WHITE, "%s\n", buffer);
+
+    return 0;
 }

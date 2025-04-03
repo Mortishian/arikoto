@@ -1,6 +1,7 @@
 #include <kernel.h>
 #include <print.h>
 #include <stdarg.h>
+#include <shell.h>
 
 static void panic_vfprintf(const char *fmt, va_list args) {
     char buffer[256];
@@ -85,7 +86,9 @@ void panic(const char *fmt, ...) {
     panic_vfprintf(fmt, args);
     va_end(args);
 
-    printk(COLOR_WHITE, "System halted.");
+    cmd_minimal_uptime();
+
+    printk(COLOR_WHITE, "\nSystem halted.");
 
     hcf();
 }

@@ -128,3 +128,4 @@ static __attribute__((unused)) size_t build_string(char *buffer, size_t size, ..
 }
 
 void panic(const char *fmt, ...);
+void print_logo_and_tagline();
